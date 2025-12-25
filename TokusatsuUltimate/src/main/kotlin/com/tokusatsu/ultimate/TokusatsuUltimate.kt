@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 class TokusatsuUltimate : MainAPI() {
-    override var mainUrl = TokusatsuUltimatePlugin.currentTokusatsuServer
+    override var mainUrl = "https://toku555.com"
     override var name = "TokusatsuUltimate"
     override val hasMainPage = true
     override var lang = "en"

@@ -1,7 +1,4 @@
-package com.tokusatsu.ultimate
-
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import com.lagradost.cloudstream3.AcraApplication.Companion.getKey
 import com.lagradost.cloudstream3.AcraApplication.Companion.setKey
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin

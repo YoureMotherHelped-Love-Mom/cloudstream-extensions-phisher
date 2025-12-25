@@ -1,30 +1,33 @@
-import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
-import com.lagradost.cloudstream3.plugins.Plugin
+import android.content.Context
+import androidx.appcompat.app.AppCompatActivity
 import com.lagradost.cloudstream3.AcraApplication.Companion.getKey
 import com.lagradost.cloudstream3.AcraApplication.Companion.setKey
-import com.lagradost.cloudstream3.SettingsScreen
+import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
+import com.lagradost.cloudstream3.plugins.Plugin
+
+enum class TokusatsuServerList(val link: Pair<String, Boolean>) {
+    TOKU555_COM("https://toku555.com" to true),
+    TOKUZILLA_NET("https://tokuzilla.net" to true),
+}
 
 @CloudstreamPlugin
 class TokusatsuUltimatePlugin: Plugin() {
-    override fun load() {
+
+    override fun load(context: Context) {
         registerMainAPI(TokusatsuUltimate())
         registerExtractorAPI(TokusatsuUltimate.P2pplay())
-    }
-    
-    override fun setupPreferenceScreen(screen: SettingsScreen) {
-        screen.singleChoice(
-            key = "tokusatsu_server",
-            title = "Select Server",
-            entries = listOf("toku555.com", "tokuzilla.net"),
-            defaultValue = "toku555.com"
-        )
+        this.openSettings = openSettings@{ ctx ->
+            val activity = ctx as AppCompatActivity
+            val frag = TokusatsuBottomFragment(this)
+            frag.show(activity.supportFragmentManager, "")
+        }
     }
 
     companion object {
         var currentTokusatsuServer: String
-            get() = "https://" + (getKey("tokusatsu_server") ?: "toku555.com")
+            get() = getKey("TOKUSATSU_CURRENT_SERVER") ?: TokusatsuServerList.TOKU555_COM.link.first
             set(value) {
-                setKey("tokusatsu_server", value.removePrefix("https://"))
+                setKey("TOKUSATSU_CURRENT_SERVER", value)
             }
     }
 }

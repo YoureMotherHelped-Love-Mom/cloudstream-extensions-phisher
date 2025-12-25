@@ -1,9 +1,18 @@
 import android.content.Context
-import com.lagradost.cloudstream3.AcraApplication.Companion.getKey
-import com.lagradost.cloudstream3.AcraApplication.Companion.setKey
 import com.lagradost.cloudstream3.plugins.CloudstreamPlugin
 import com.lagradost.cloudstream3.plugins.Plugin
+import com.lagradost.cloudstream3.app
+import com.lagradost.cloudstream3.AcraApplication.Companion.getKey
+import com.lagradost.cloudstream3.AcraApplication.Companion.setKey
 
+@CloudstreamPlugin
+class TokusatsuUltimatePlugin: Plugin() {
+    override fun load() {
+        // Registers the main API for this plugin
+        registerMainAPI(TokusatsuUltimate())
+        registerExtractorAPI(TokusatsuUltimate.P2pplay())
+    }
+}
 enum class TokusatsuServerList(val link: Pair<String, Boolean>) {
     TOKU555_COM("https://toku555.com" to true),
     TOKUZILLA_NET("https://tokuzilla.net" to true),

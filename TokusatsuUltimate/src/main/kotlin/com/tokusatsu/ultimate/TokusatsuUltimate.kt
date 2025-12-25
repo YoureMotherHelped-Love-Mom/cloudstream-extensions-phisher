@@ -39,13 +39,40 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 class TokusatsuUltimate : MainAPI() {
-    override var mainUrl = TokusatsuUltimatePlugin.currentTokusatsuServer
+    override var mainUrl = "https://toku555.com"
     override var name = "TokusatsuUltimate"
     override val hasMainPage = true
     override var lang = "en"
     override val hasQuickSearch = false
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(TvType.Anime, TvType.TvSeries, TvType.Movie)
+    
+    override val openSettings = {
+        settings {
+            title = "Tokusatsu Ultimate Settings"
+            
+            val servers = listOf(
+                "toku555.com" to "toku555.com",
+                "tokuzilla.net" to "tokuzilla.net"
+            )
+            
+            val key = "tokusatsu_server"
+            
+            singleChoice(
+                key = key,
+                title = "Select Server",
+                options = servers,
+                default = "toku555.com"
+            )
+        }
+    }
+    
+    private fun getBaseUrl(): String {
+        return "https://" + app.getKey(
+            "tokusatsu_server",
+            "toku555.com"
+        )
+    }
 
     companion object {
         private val mapper = jacksonObjectMapper()
@@ -96,7 +123,7 @@ class TokusatsuUltimate : MainAPI() {
     )
 
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
-        val url = "${mainUrl}/${request.data}/page/$page/"
+        val url = "${getBaseUrl()}/${request.data}/page/$page/"
         
         val document = app.get(url).document
         val home = document.select("div.film-poster, .item, .series-item").mapNotNull { element ->
@@ -127,7 +154,7 @@ class TokusatsuUltimate : MainAPI() {
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
-        val searchUrl = "$mainUrl/search/${query}/"
+        val searchUrl = "${getBaseUrl()}/search/${query}/"
         val document = app.get(searchUrl).document
 
         return document.select("div.film-poster, .item, .series-item").mapNotNull { element ->
@@ -166,7 +193,7 @@ class TokusatsuUltimate : MainAPI() {
         document.select("ul.pagination.post-tape li").amap { epElement ->
             val epTitle = epElement.select("a").text()
             val epHref = epElement.select("a").attr("href")
-            val href= app.get(epHref).document.select("div.player iframe").attr("src")
+            val href = fixUrl(app.get(epHref).document.select("div.player iframe").attr("src"))
             val epNum = epTitle.toIntOrNull()
 
             episodes.add(
@@ -181,7 +208,8 @@ class TokusatsuUltimate : MainAPI() {
         // If no episodes found, try to find them in a different structure
         if (episodes.isEmpty()) {
             val iframe=document.select("div.player iframe").attr("src")
-            return newMovieLoadResponse(title, url, TvType.AnimeMovie,iframe) {
+            val processedIframe = if (iframe.startsWith("//")) "https:$iframe" else if (iframe.startsWith("/")) "${getBaseUrl()}$iframe" else iframe
+            return newMovieLoadResponse(title, url, TvType.AnimeMovie,processedIframe) {
                 this.posterUrl = posterUrl
                 this.year = year
                 this.plot = description

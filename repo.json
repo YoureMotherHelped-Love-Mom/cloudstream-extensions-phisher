@@ -1,7 +1,7 @@
 {
     "name": "Tokusatsu Ultimate Repo",
-    "iconUrl": "https://raw.githubusercontent.com/YoureMotherHelped-Love-Mom/cloudstream-extensions-phisher/TokusatsuUltimate/TokusatsuUltimateIcon.png",
-    "description": "Tokusatsu Ultimate Repository",
+    "iconUrl": "https://raw.githubusercontent.com/YoureMotherHelped-Love-Mom/my_stuff/pac_man_icon.png",
+    "description": "YoureMotherHelped-Love-Mom_Repo",
     "manifestVersion": 1,
     "pluginLists": [
       "https://raw.githubusercontent.com/YoureMotherHelped-Love-Mom/cloudstream-extensions-phisher/builds/plugins.json"

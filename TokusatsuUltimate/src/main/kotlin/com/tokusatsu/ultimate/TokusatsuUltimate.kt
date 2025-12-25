@@ -39,7 +39,7 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 class TokusatsuUltimate : MainAPI() {
-    override var mainUrl = "https://toku555.com"
+    override var mainUrl = TokusatsuUltimatePlugin.currentTokusatsuServer
     override var name = "TokusatsuUltimate"
     override val hasMainPage = true
     override var lang = "en"
@@ -47,31 +47,8 @@ class TokusatsuUltimate : MainAPI() {
     override val hasDownloadSupport = true
     override val supportedTypes = setOf(TvType.Anime, TvType.TvSeries, TvType.Movie)
     
-    override val openSettings = {
-        settings {
-            title = "Tokusatsu Ultimate Settings"
-            
-            val servers = listOf(
-                "toku555.com" to "toku555.com",
-                "tokuzilla.net" to "tokuzilla.net"
-            )
-            
-            val key = "tokusatsu_server"
-            
-            singleChoice(
-                key = key,
-                title = "Select Server",
-                options = servers,
-                default = "toku555.com"
-            )
-        }
-    }
-    
     private fun getBaseUrl(): String {
-        return "https://" + app.getKey(
-            "tokusatsu_server",
-            "toku555.com"
-        )
+        return TokusatsuUltimatePlugin.currentTokusatsuServer
     }
 
     companion object {
